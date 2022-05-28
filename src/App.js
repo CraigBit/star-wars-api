@@ -1,52 +1,75 @@
 import Header from './components/header/Header';
 import RandomPlanet from './components/random-planet/Random-planet';
 import { Component } from 'react';
-import ItemList from './components/item-list/Item-list';
-import Characters from './components/characters-details/Characters';
+import Row from './components/row/Row';
+import SwapiOperator from './services/swapi-operator';
+import ErrorBoundary from './components/error-boundary/ErrorBoundary';
+import ItemDetails from './components/item-details/ItemDetails';
 
 import './App.css';
-import PeoplePage from './components/people page/People-page';
-import SwapiOperator from './services/swapi-operator';
 
 class App extends Component {
   swapi = new SwapiOperator();
 
   render() {
-    fetch('https://swapi.dev/api/people/')
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+    const {
+      getOneCharacter,
+      getOneStarship,
+      getPersonImage,
+      getStarshipImage,
+    } = this.swapi;
+
+    const personDetails = (
+      <ItemDetails
+        getImageUrl={getPersonImage}
+        getData={getOneCharacter}
+        itemId={13}
+      />
+    );
+
+    const starshipDetails = (
+      <ItemDetails
+        getImageUrl={getStarshipImage}
+        getData={getOneStarship}
+        itemId={5}
+      />
+    );
 
     return (
-      <div className="container-fluid">
-        <Header />
-        <RandomPlanet />
+      <ErrorBoundary>
+        <div className="container-fluid">
+          <Header />
+          <RandomPlanet />
+          <Row leftElem={personDetails} rightElem={starshipDetails} />
 
-        <PeoplePage getItems={this.swapi.getAllPeople} />
-        <div className="row mb2">
-          <div className="col-md-6">
-            <ItemList
-              getItems={this.swapi.getAllPlanets}
-              onItemSelected={this.onPersonSelected}
-              renderItem={(item) => item.name}
-            />
+          {/* <PeoplePage getItems={this.swapi.getAllPeople} />
+          <div className="row mb2">
+            <div className="col-md-6">
+              <ItemList
+                getItems={this.swapi.getAllPlanets}
+                onItemSelected={this.onPersonSelected}
+                renderItem={(item) => item.name}
+              />
+            </div>
+            <div className="col-md-6">
+              <Characters />
+            </div>
           </div>
-          <div className="col-md-6">
-            <Characters />
-          </div>
+
+          <div className="row mb2">
+            <div className="col-md-6">
+              <ItemList
+                getItems={this.swapi.getAllStarships}
+                onItemSelected={this.onPersonSelected}
+                renderItem={(item) => item.name}
+              />
+            </div>
+            <div className="col-md-6">
+              <Characters />
+            </div>
+          </div> */}
         </div>
-        <div className="row mb2">
-          <div className="col-md-6">
-            <ItemList
-              getItems={this.swapi.getAllStarships}
-              onItemSelected={this.onPersonSelected}
-              renderItem={(item) => item.name}
-            />
-          </div>
-          <div className="col-md-6">
-            <Characters />
-          </div>
-        </div>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

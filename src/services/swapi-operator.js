@@ -8,7 +8,8 @@
 //     console.log(result);
 //   });
 export default class SwapiOperator {
-  _apiBeginning = 'https://swapi.dev/api/';
+  _apiBeginning = 'https://swapi.dev/api';
+  _imageBase = 'https://starwars-visualguide.com/assets/img';
 
   async getData(url) {
     const data = await fetch(`${this._apiBeginning}${url}`);
@@ -20,34 +21,46 @@ export default class SwapiOperator {
   }
 
   getAllPeople = async () => {
-    const res = await this.getData('people');
+    const res = await this.getData('/people');
     return res.results.map(this._transformPerson);
   };
 
-  async getOneCharacter(id) {
-    const character = await this.getData(`people/${id}`);
+  getOneCharacter = async (id) => {
+    const character = await this.getData(`/people/${id}`);
     return this._transformPerson(character);
-  }
+  };
 
   getAllPlanets = async () => {
-    const res = await this.getData('planets');
+    const res = await this.getData('/planets');
     return res.results.map(this._transformPlanet);
   };
 
-  async getOnePlanet(id) {
-    const planet = await this.getData(`planets/${id}`);
+  getOnePlanet = async (id) => {
+    const planet = await this.getData(`/planets/${id}`);
     return this._transformPlanet(planet);
-  }
+  };
 
   getAllStarships = async () => {
-    const starship = await this.getData('starships');
+    const starship = await this.getData('/starships');
     return starship.results.map(this._transformStarship);
   };
 
-  async getOneStarship(id) {
-    const starship = await this.getData(`starships/${id}`);
+  getOneStarship = async (id) => {
+    const starship = await this.getData(`/starships/${id}`);
     return this._transformStarship(starship);
-  }
+  };
+
+  getPersonImage = ({ id }) => {
+    return `${this._imageBase}/characters/${id}.jpg`;
+  };
+
+  getStarshipImage = ({ id }) => {
+    return `${this._imageBase}/starships/${id}.jpg`;
+  };
+
+  getPlanetImage = ({ id }) => {
+    return `${this._imageBase}/planets/${id}.jpg`;
+  };
 
   _extractId(item) {
     const isRegExp = /\/([0-9]*)\/$/;

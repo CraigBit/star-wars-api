@@ -1,7 +1,8 @@
 import { Component } from 'react';
 import ItemList from '../item-list/Item-list';
-import Characters from '../characters-details/Characters';
-import ErrorIndicator from '../error/ErrorIndicator';
+import ItemDetails from '../item-details/ItemDetails';
+import Row from '../row/Row';
+import ErrorBoundary from '../error-boundary/ErrorBoundary';
 
 export default class PeoplePage extends Component {
   state = {
@@ -9,31 +10,25 @@ export default class PeoplePage extends Component {
     hasError: false,
   };
 
-  componentDidCatch() {
-    this.setState({ hasError: true });
-  }
-
   onPersonSelected = (id) => {
     this.setState({ selectedPerson: id });
   };
 
   render() {
-    if (this.state.hasError) return <ErrorIndicator />;
-    return (
-      <div className="row mb2">
-        <div className="col-md-6">
-          <ItemList
-            getItems={this.props.getItems}
-            onItemSelected={this.onPersonSelected}
-            renderItem={({ name, gender, birthYear }) =>
-              `${name} (${gender}, ${birthYear})`
-            }
-          />
-        </div>
-        <div className="col-md-6">
-          <Characters personId={this.state.selectedPerson} />
-        </div>
-      </div>
+    const itemList = (
+      <ItemList
+        getItems={this.props.getItems}
+        onItemSelected={this.onPersonSelected}
+        renderItem={({ name, birthYear }) => `${name} (${birthYear})`}
+      />
     );
+
+    const persons = (
+      <ErrorBoundary>
+        <ItemDetails itemId={this.state.selectedPerson} />
+      </ErrorBoundary>
+    );
+
+    return <Row leftElem={itemList} rightElem={persons} />;
   }
 }

@@ -1,51 +1,54 @@
 import React, { Component } from 'react';
 import SwapiOperator from '../../services/swapi-operator';
-import './Characters.css';
+import './ItemDetails.css';
 import Spinner from '../spinner/Spinner';
 
-export default class Characters extends Component {
+export default class ItemDetails extends Component {
   swapi = new SwapiOperator();
 
   state = {
-    person: null,
+    item: null,
     loading: true,
   };
 
   componentDidMount() {
-    this.updatePerson();
+    this.updateItem();
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.personId !== prevProps.personId) {
-      this.updatePerson();
+    if (this.props.itemId !== prevProps.itemId) {
+      this.updateItem();
     }
   }
 
-  updatePerson() {
+  updateItem() {
     this.setState({ loading: true });
-    const { personId } = this.props;
+    const { itemId, getData } = this.props;
 
-    if (!personId) {
+    if (!itemId) {
       return;
     }
 
-    this.swapi.getOneCharacter(personId).then(this.onPersonUpdated);
+    getData(itemId).then(this.onItemUpdated);
   }
 
-  onPersonUpdated = (person) => {
-    this.setState({ person, loading: false });
+  onItemUpdated = (item) => {
+    const { getImageUrl } = this.props;
+    this.setState({ item, loading: false, image: getImageUrl(item) });
   };
 
   render() {
-    if (!this.state.person) return <span>Select a person from the list</span>;
+    if (!this.state.item) return <span>Select an item from the list</span>;
 
-    const { person, loading } = this.state;
+    const { item, loading, image } = this.state;
 
     const loadingShown = loading ? <Spinner /> : null;
-    const characterShown = !loading ? <OneCharacter person={person} /> : null;
+    const characterShown = !loading ? (
+      <OneItem image={image} item={item} />
+    ) : null;
 
     return (
-      <div className="person-details card">
+      <div className="item-details card">
         {characterShown}
         {loadingShown}
       </div>
@@ -53,15 +56,11 @@ export default class Characters extends Component {
   }
 }
 
-const OneCharacter = ({ person }) => {
-  const { id, name, gender, birthYear, eyeColor } = person;
+const OneItem = ({ item, image }) => {
+  const { id, name, gender, birthYear, eyeColor } = item;
   return (
     <React.Fragment>
-      <img
-        className="person-image"
-        src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`}
-        alt="character"
-      />
+      <img className="item-image" src={image} alt="character" />
 
       <div className="card-body">
         <h4>{name}</h4>
