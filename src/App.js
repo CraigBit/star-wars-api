@@ -12,6 +12,10 @@ class App extends Component {
   swapi = new SwapiOperator();
 
   render() {
+    fetch('https://swapi.dev/api/people/')
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+
     return (
       <div className="container-fluid">
         <Header />
