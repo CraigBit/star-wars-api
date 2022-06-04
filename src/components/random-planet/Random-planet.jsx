@@ -4,7 +4,7 @@ import './Random-planet.css';
 import '../../services/swapi-operator';
 import SwapiOperator from '../../services/swapi-operator';
 import Spinner from '../spinner/Spinner';
-import ErrorIndicator from '../error/ErrorIndicator';
+import ErrorIndicator from '../error/Error-indicator';
 
 export default class RandomPlanet extends Component {
   swapi = new SwapiOperator();

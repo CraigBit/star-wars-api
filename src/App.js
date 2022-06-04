@@ -1,48 +1,35 @@
+import { Component } from 'react';
+import './App.css';
+
+import SwapiOperator from './services/swapi-operator';
+import { SwapiServiceProvider } from './components/swapi-service-context/Swapi-service-context';
+
+import ErrorBoundary from './components/error-boundary/Error-boundary';
+
 import Header from './components/header/Header';
 import RandomPlanet from './components/random-planet/Random-planet';
-import { Component } from 'react';
-import Row from './components/row/Row';
-import SwapiOperator from './services/swapi-operator';
-import ErrorBoundary from './components/error-boundary/ErrorBoundary';
-import ItemDetails from './components/item-details/ItemDetails';
-
-import './App.css';
+import PeoplePage from './components/pages/People-page';
+import PlanetsPage from './components/pages/Planets-page';
+import StarshipsPage from './components/pages/Starships-page';
 
 class App extends Component {
   swapi = new SwapiOperator();
 
   render() {
-    const {
-      getOneCharacter,
-      getOneStarship,
-      getPersonImage,
-      getStarshipImage,
-    } = this.swapi;
-
-    const personDetails = (
-      <ItemDetails
-        getImageUrl={getPersonImage}
-        getData={getOneCharacter}
-        itemId={13}
-      />
-    );
-
-    const starshipDetails = (
-      <ItemDetails
-        getImageUrl={getStarshipImage}
-        getData={getOneStarship}
-        itemId={5}
-      />
-    );
-
     return (
       <ErrorBoundary>
-        <div className="container-fluid">
-          <Header />
-          <RandomPlanet />
-          <Row leftElem={personDetails} rightElem={starshipDetails} />
+        <SwapiServiceProvider value={this.swapi}>
+          <div className="container-fluid">
+            <Header />
+            <RandomPlanet />
 
-          {/* <PeoplePage getItems={this.swapi.getAllPeople} />
+            <PeoplePage />
+
+            <PlanetsPage />
+
+            <StarshipsPage />
+
+            {/* <PeoplePage getItems={this.swapi.getAllPeople} />
           <div className="row mb2">
             <div className="col-md-6">
               <ItemList
@@ -68,7 +55,8 @@ class App extends Component {
               <Characters />
             </div>
           </div> */}
-        </div>
+          </div>
+        </SwapiServiceProvider>
       </ErrorBoundary>
     );
   }

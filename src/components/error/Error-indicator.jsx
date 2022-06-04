@@ -1,4 +1,4 @@
-import './ErrorIndicator.css';
+import './Error-indicator.css';
 import icon from './death-star.png';
 
 const ErrorIndicator = () => {
